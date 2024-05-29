@@ -86,7 +86,6 @@ cd pytorch-attention
     
 
 
-
 ## Attention Mechanisms
 ### 1. Squeeze-and-Excitation Attention
 * #### Squeeze-and-Excitation Networks (CVPR 2018) [pdf](https://arxiv.org/pdf/1709.01507)
@@ -112,26 +111,26 @@ The SE block operates in two main steps: **squeeze** and **excitation**.
 
 1. **Squeeze**:
    - In the squeeze step, global information is captured by applying global average pooling across the spatial dimensions of the feature maps.
-   - For a given input feature map with shape \( H \times W \times C \) (height, width, and channels), the squeeze operation reduces it to a \( 1 \times 1 \times C \) feature vector by averaging each channel's spatial dimensions:
-     \[
+   - For a given input feature map with shape $\( H \times W \times C \)$ (height, width, and channels), the squeeze operation reduces it to a $\( 1 \times 1 \times C \)$ feature vector by averaging each channel's spatial dimensions:
+     $$\[
      z_c = \frac{1}{H \times W} \sum_{i=1}^{H} \sum_{j=1}^{W} x_{ijc}
-     \]
-   - Here, \( z_c \) is the c-th element of the squeezed feature vector, representing the global information of the c-th channel.
+     \]$$
+   - Here, $\( z_c \)$ is the c-th element of the squeezed feature vector, representing the global information of the c-th channel.
 
 2. **Excitation**:
    - The excitation step involves learning a set of per-channel modulation weights to recalibrate the channels. This is achieved using a simple gating mechanism with a sigmoid activation function.
-   - The squeezed feature vector \( z \) is passed through a small fully connected (FC) neural network with a bottleneck architecture (using two FC layers with a non-linear activation in between):
-     \[
+   - The squeezed feature vector $\( z \)$ is passed through a small fully connected (FC) neural network with a bottleneck architecture (using two FC layers with a non-linear activation in between):
+     $$\[
      s = \sigma(W_2 \cdot \text{ReLU}(W_1 \cdot z))
-     \]
-   - Here, \( W_1 \) and \( W_2 \) are weight matrices, and \( \sigma \) denotes the sigmoid function, resulting in an output vector \( s \) of the same length \( C \).
-   - The resulting vector \( s \) contains weights that highlight the importance of each channel.
+     \]$$
+   - Here, $\( W_1 \)$ and $\( W_2 \)$ are weight matrices, and $\( \sigma \)$ denotes the sigmoid function, resulting in an output vector $\( s \)$ of the same length $\( C \)$.
+   - The resulting vector $\( s \)$ contains weights that highlight the importance of each channel.
 
 3. **Recalibration**:
-   - Finally, the original input feature map is recalibrated by scaling each channel with the corresponding weight from the excitation vector \( s \):
-     \[
+   - Finally, the original input feature map is recalibrated by scaling each channel with the corresponding weight from the excitation vector $\( s \)$:
+     $$\[
      \tilde{x}_{ijc} = s_c \cdot x_{ijc}
-     \]
+     \]$$
    - This scaling operation emphasizes important channels and suppresses less important ones, thereby improving the network's ability to model complex dependencies.
 
 ### Benefits of SE Attention
@@ -145,6 +144,8 @@ The SE block operates in two main steps: **squeeze** and **excitation**.
 SE Attention has been successfully integrated into various CNN architectures, such as ResNet, Inception, and MobileNet, resulting in improved accuracy on standard benchmarks like ImageNet.
 
 Overall, the Squeeze-and-Excitation mechanism provides an effective and efficient way to enhance the representational capabilities of CNNs by focusing on channel-wise feature interdependencies.
+
+---
 
 ### 2. Convolutional Block Attention Module
 * #### CBAM: convolutional block attention module (ECCV 2018) [pdf](https://openaccess.thecvf.com/content_ECCV_2018/papers/Sanghyun_Woo_Convolutional_Block_Attention_ECCV_2018_paper.pdf)
@@ -171,21 +172,21 @@ CBAM applies attention in two main stages: **Channel Attention** and **Spatial A
    - The Channel Attention Module focuses on refining the importance of each channel by capturing the global information of the input feature map.
    - Two different pooling operations, average pooling and max pooling, are applied along the spatial dimension to generate two different spatial context descriptors.
    - These descriptors are then passed through a shared multi-layer perceptron (MLP) with one hidden layer. The outputs of the MLPs are combined and passed through a sigmoid function to obtain the channel attention map.
-   - Formally, given an input feature map \( F \in \mathbb{R}^{H \times W \times C} \):
-     \[
+   - Formally, given an input feature map $\( F \$ in $\mathbb{R}^{H \times W \times C} \)$:
+     $$\[
      M_c(F) = \sigma(\text{MLP}(\text{AvgPool}(F)) + \text{MLP}(\text{MaxPool}(F)))
-     \]
-   - The channel attention map \( M_c \in \mathbb{R}^{1 \times 1 \times C} \) is then multiplied with the input feature map to produce a refined feature map.
+     \]$$
+   - The channel attention map $\( M_c \in \mathbb{R}^{1 \times 1 \times C} \)$ is then multiplied with the input feature map to produce a refined feature map.
 
 2. **Spatial Attention Module**:
    - The Spatial Attention Module focuses on highlighting important spatial regions within the feature maps.
    - Similar to the Channel Attention Module, two different pooling operations (average pooling and max pooling) are applied along the channel dimension to generate two different channel context descriptors.
    - These descriptors are concatenated and passed through a convolution layer followed by a sigmoid function to generate the spatial attention map.
-   - Formally, given the refined feature map from the Channel Attention Module \( F' \in \mathbb{R}^{H \times W \times C} \):
-     \[
+   - Formally, given the refined feature map from the Channel Attention Module $\( F' \in \mathbb{R}^{H \times W \times C} \)$:
+     $$\[
      M_s(F') = \sigma(f^{7 \times 7}([\text{AvgPool}(F'); \text{MaxPool}(F')]))
-     \]
-   - The spatial attention map \( M_s \in \mathbb{R}^{H \times W \times 1} \) is then multiplied with the refined feature map to produce the final output.
+     \]$$
+   - The spatial attention map $\( M_s \in \mathbb{R}^{H \times W \times 1} \)$ is then multiplied with the refined feature map to produce the final output.
 
 ### Benefits of CBAM
 
@@ -200,6 +201,8 @@ CBAM has been integrated into various state-of-the-art CNN architectures, such a
 ### Summary
 
 The Convolutional Block Attention Module (CBAM) is a powerful attention mechanism that improves the representational capacity of CNNs by applying sequential channel and spatial attention. By refining feature maps to focus on more informative channels and spatial locations, CBAM helps CNNs achieve better performance on a range of computer vision tasks.
+
+---
 
 ### 3. Bottleneck Attention Module
 * #### Bam: Bottleneck attention module(BMVC 2018) [pdf](http://bmvc2018.org/contents/papers/0092.pdf)
@@ -229,29 +232,29 @@ BAM consists of two main components: **Channel Attention** and **Spatial Attenti
    - The Channel Attention Module aims to highlight important channels.
    - Global average pooling is applied to the input feature map to generate a channel descriptor.
    - The descriptor is passed through a small multi-layer perceptron (MLP) with one hidden layer and a ReLU activation function, followed by a sigmoid function to produce the channel attention map.
-   - Formally, given an input feature map \( F \in \mathbb{R}^{H \times W \times C} \):
-     \[
+   - Formally, given an input feature map $\( F \in \mathbb{R}^{H \times W \times C} \)$:
+     $$\[
      M_c(F) = \sigma(\text{MLP}(\text{AvgPool}(F)))
-     \]
-   - The channel attention map \( M_c \in \mathbb{R}^{1 \times 1 \times C} \) is then used to modulate the input feature map by channel-wise multiplication.
+     \]$$
+   - The channel attention map $\( M_c \in \mathbb{R}^{1 \times 1 \times C} \)$ is then used to modulate the input feature map by channel-wise multiplication.
 
 2. **Spatial Attention Module**:
    - The Spatial Attention Module focuses on important spatial locations.
    - Average pooling and max pooling are applied along the channel dimension to generate spatial context descriptors.
    - These descriptors are concatenated and passed through a convolutional layer with a \( k \times k \) filter (typically \( k = 7 \)), followed by a sigmoid function to produce the spatial attention map.
-   - Formally, for the modulated feature map \( F' \in \mathbb{R}^{H \times W \times C} \) from the Channel Attention Module:
-     \[
+   - Formally, for the modulated feature map $\( F' \in \mathbb{R}^{H \times W \times C} \)$ from the Channel Attention Module:
+     $$\[
      M_s(F') = \sigma(f^{k \times k}([\text{AvgPool}(F'); \text{MaxPool}(F')]))
-     \]
-   - The spatial attention map \( M_s \in \mathbb{R}^{H \times W \times 1} \) is then used to modulate the feature map spatially.
+     \]$$
+   - The spatial attention map $\( M_s \in \mathbb{R}^{H \times W \times 1} \)$ is then used to modulate the feature map spatially.
 
 ### Sequential Application
 
 The final output of the BAM is obtained by sequentially applying the channel and spatial attention mechanisms:
-   \[
+   $$\[
    \hat{F} = F \times M_c(F) \times M_s(F')
-   \]
-Where \( \hat{F} \) is the refined feature map, \( F \) is the original input feature map, \( M_c(F) \) is the channel attention map, and \( M_s(F') \) is the spatial attention map applied to the feature map modulated by channel attention.
+   \]$$
+Where $\( \hat{F} \)$ is the refined feature map, $\( F \)$ is the original input feature map, $\( M_c(F) \)$ is the channel attention map, and $\( M_s(F') \)$ is the spatial attention map applied to the feature map modulated by channel attention.
 
 ### Benefits of BAM
 
@@ -266,6 +269,8 @@ BAM has been shown to improve the performance of CNNs on various tasks, includin
 ### Summary
 
 The Bottleneck Attention Module (BAM) is a powerful attention mechanism that enhances CNN performance by focusing on critical channels and spatial regions within feature maps. By combining channel and spatial attention in a computationally efficient manner, BAM provides a practical solution for improving the representational power of deep learning models.
+
+---
 
 ### 4. Double Attention
 * #### A2-nets: Double attention networks (NeurIPS 2018) [pdf](https://arxiv.org/pdf/1810.11579)
@@ -290,26 +295,26 @@ Double Attention employs a two-step process to compute attention: **Gathering** 
 
 1. **Gathering**:
    - In the gathering step, feature information from all spatial locations is aggregated to form a compact representation.
-   - Given an input feature map \( X \in \mathbb{R}^{H \times W \times C} \), three different projections are applied to create key \( K \), query \( Q \), and value \( V \) feature maps.
-   - The attention map is computed by multiplying the query \( Q \) with the key \( K \):
-     \[
+   - Given an input feature map $\( X \in \mathbb{R}^{H \times W \times C} \)$, three different projections are applied to create key $\( K \)$, query $\( Q \)$, and value $\( V \)$ feature maps.
+   - The attention map is computed by multiplying the query $\( Q \)$ with the key $\( K \)$:
+     $$\[
      A = \text{softmax}(QK^T)
-     \]
-   - This results in an attention map \( A \in \mathbb{R}^{HW \times HW} \), capturing the relationships between all pairs of spatial locations.
+     \]$$
+   - This results in an attention map $\( A \in \mathbb{R}^{HW \times HW} \)$, capturing the relationships between all pairs of spatial locations.
 
 2. **Distributing**:
    - In the distributing step, the aggregated information is distributed back to each spatial location to enhance the feature representation.
-   - The value feature map \( V \) is multiplied by the attention map \( A \):
-     \[
+   - The value feature map $\( V \)$ is multiplied by the attention map $\( A \)$:
+     $$\[
      O = AV
-     \]
-   - The result \( O \in \mathbb{R}^{HW \times C} \) is then reshaped back to the original feature map dimensions \( \mathbb{R}^{H \times W \times C} \).
+     \]$$
+   - The result $\( O \in \mathbb{R}^{HW \times C} \)$ is then reshaped back to the original feature map dimensions $\( \mathbb{R}^{H \times W \times C} \)$.
 
 3. **Combining with Input**:
-   - The final output is obtained by combining the attention-modulated feature map \( O \) with the original input feature map \( X \):
-     \[
+   - The final output is obtained by combining the attention-modulated feature map $\( O \)$ with the original input feature map $\( X \)$:
+     $$\[
      Y = X + O
-     \]
+     \]$$
    - This residual connection ensures that the model retains the original features while incorporating the attention-enhanced information.
 
 ### Benefits of Double Attention
@@ -329,6 +334,8 @@ Double Attention has been successfully applied in various domains, including:
 ### Summary
 
 Double Attention (A2-Nets) is an advanced attention mechanism that enhances neural networks' ability to model long-range dependencies by using a two-step process of gathering and distributing feature information. This mechanism is particularly useful in computer vision tasks, where it helps to capture complex relationships within the data efficiently and effectively. By integrating Double Attention into existing architectures, significant performance improvements can be achieved across various applications.
+
+---
 
 ### 5. Style Attention
 * #### Srm : A style-based recalibration module for convolutional neural networks (ICCV 2019)  [pdf](https://arxiv.org/pdf/1903.10829)
@@ -368,22 +375,22 @@ Here's a simplified breakdown of how a Style Attention mechanism might be implem
 
 1. **Extract Style and Content Features**:
    - Given a style image and a content image, extract their respective feature maps using a pre-trained CNN.
-   - Let \( F_s \) be the style feature map and \( F_c \) be the content feature map.
+   - Let $\( F_s \)$ be the style feature map and $\( F_c \)$ be the content feature map.
 
 2. **Compute Attention Map**:
-   - Calculate the attention map \( A \) by measuring the similarity between \( F_s \) and \( F_c \). This can be done using various methods, such as dot-product attention or more complex correlation measures.
-   - The attention map \( A \) highlights which parts of the style feature map \( F_s \) correspond to which parts of the content feature map \( F_c \).
+   - Calculate the attention map $\( A \)$ by measuring the similarity between $\( F_s \)$ and $\( F_c \)$. This can be done using various methods, such as dot-product attention or more complex correlation measures.
+   - The attention map $\( A \)$ highlights which parts of the style feature map $\( F_s \)$ correspond to which parts of the content feature map $\( F_c \)$.
 
 3. **Modulate Content Features**:
-   - Use the attention map \( A \) to modulate the content features. This involves combining \( F_c \) with \( F_s \) in a way that the style features are applied according to the attention map.
+   - Use the attention map $\( A \)$ to modulate the content features. This involves combining $\( F_c \)$ with $\( F_s \)$ in a way that the style features are applied according to the attention map.
    - The modulation can be expressed as:
-     \[
+     $$\[
      F_{modulated} = A \cdot F_s + (1 - A) \cdot F_c
-     \]
-   - Here, \( F_{modulated} \) represents the new feature map that combines content and style features.
+     \]$$
+   - Here, $\( F_{modulated} \)$ represents the new feature map that combines content and style features.
 
 4. **Generate Stylized Output**:
-   - Finally, the modulated feature map \( F_{modulated} \) is passed through a decoder network to generate the final stylized image.
+   - Finally, the modulated feature map $\( F_{modulated} \)$ is passed through a decoder network to generate the final stylized image.
 
 ### Applications of Style Attention
 
@@ -400,6 +407,9 @@ Here's a simplified breakdown of how a Style Attention mechanism might be implem
 ### Summary
 
 Style Attention is a specialized attention mechanism used to improve the quality and effectiveness of style transfer in neural networks. By focusing on important style features and applying them selectively to content images, Style Attention ensures that the stylized outputs are both visually appealing and true to the desired artistic style. This mechanism has broad applications in artistic style transfer, image-to-image translation, and other content-aware image manipulation tasks.
+
+---
+
 ### 6. Global Context Attention
 * #### Gcnet: Non-local networks meet squeeze-excitation networks and beyond (ICCVW 2019) [pdf](https://arxiv.org/pdf/1904.11492)
 * ##### Model Overview
@@ -433,31 +443,31 @@ Global Context Attention (GCA) is an advanced attention mechanism designed to en
 Global Context Attention typically involves the following steps:
 
 1. **Feature Extraction**:
-   - Extract features from an input image using a convolutional neural network (CNN). Let the feature map be \( F \in \mathbb{R}^{H \times W \times C} \), where \( H \) and \( W \) are the height and width, and \( C \) is the number of channels.
+   - Extract features from an input image using a convolutional neural network (CNN). Let the feature map be $\( F \in \mathbb{R}^{H \times W \times C} \)$, where $\( H \)$ and $\( W \)$ are the height and width, and $\( C \)$ is the number of channels.
 
 2. **Context Aggregation**:
-   - Perform global average pooling or a similar operation to aggregate the features across the spatial dimensions. This produces a global context vector \( g \in \mathbb{R}^{C} \):
-     \[
+   - Perform global average pooling or a similar operation to aggregate the features across the spatial dimensions. This produces a global context vector $\( g \in \mathbb{R}^{C} \)$:
+     $$\[
      g = \frac{1}{H \times W} \sum_{i=1}^{H} \sum_{j=1}^{W} F_{ij}
-     \]
-   - This vector \( g \) captures the overall context of the entire feature map.
+     \]$$
+   - This vector $\( g \)$ captures the overall context of the entire feature map.
 
 3. **Attention Generation**:
-   - Generate an attention map using the global context vector \( g \). This involves passing \( g \) through a series of transformations, such as fully connected layers followed by non-linear activations and a sigmoid function.
-   - The attention map \( A \in \mathbb{R}^{1 \times 1 \times C} \) is obtained, which represents the importance of each channel in the global context.
+   - Generate an attention map using the global context vector $\( g \)$. This involves passing $\( g \)$ through a series of transformations, such as fully connected layers followed by non-linear activations and a sigmoid function.
+   - The attention map $\( A \in \mathbb{R}^{1 \times 1 \times C} \)$ is obtained, which represents the importance of each channel in the global context.
 
 4. **Feature Modulation**:
-   - Modulate the original feature map \( F \) using the attention map \( A \). This is typically done by element-wise multiplication:
-     \[
+   - Modulate the original feature map $\( F \)$ using the attention map $\( A \)$. This is typically done by element-wise multiplication:
+     $$\[
      \hat{F}_{ij} = F_{ij} \cdot A
-     \]
-   - Here, \( \hat{F}_{ij} \) is the refined feature map that incorporates global contextual information.
+     \]$$
+   - Here, $\( \hat{F}_{ij} \)$ is the refined feature map that incorporates global contextual information.
 
 5. **Combining Features**:
-   - The modulated feature map \( \hat{F} \) can be combined with the original feature map \( F \) to enhance the features further, often using a residual connection:
-     \[
+   - The modulated feature map $\( \hat{F} \)$ can be combined with the original feature map $\( F \)$ to enhance the features further, often using a residual connection:
+     $$\[
      F_{out} = \hat{F} + F
-     \]
+     \]$$
    - This ensures that the original features are preserved while enhancing them with global context.
 
 ### Benefits of Global Context Attention
@@ -477,6 +487,8 @@ Global Context Attention has been successfully applied in various areas, includi
 ### Summary
 
 Global Context Attention (GCA) is an attention mechanism that enhances neural networks by incorporating global contextual information into feature representations. By aggregating and utilizing global features, GCA improves the model's ability to understand the broader scene, leading to better performance in tasks such as image classification, object detection, and semantic segmentation. GCA's ability to capture and leverage global dependencies makes it a powerful addition to modern deep learning architectures.
+
+---
 
 ### 7. Selective Kernel Attention
 
@@ -512,31 +524,31 @@ Selective Kernel Attention (SKA) is an advanced attention mechanism designed to 
 Selective Kernel Attention typically involves the following steps:
 
 1. **Multi-branch Convolution**:
-   - Given an input feature map \( F \in \mathbb{R}^{H \times W \times C} \), it is processed by multiple convolutional branches. Each branch \( i \) applies a different convolutional kernel \( K_i \):
-     \[
+   - Given an input feature map $\( F \in \mathbb{R}^{H \times W \times C} \)$, it is processed by multiple convolutional branches. Each branch $\( i \)$ applies a different convolutional kernel $\( K_i \)$:
+     $$\[
      F_i = K_i * F
-     \]
-   - This results in a set of feature maps \( \{F_1, F_2, \ldots, F_n\} \), where \( n \) is the number of branches.
+     \]$$
+   - This results in a set of feature maps $\( \{F_1, F_2, \ldots, F_n\} \)$, where $\( n \)$ is the number of branches.
 
 2. **Global Feature Aggregation**:
-   - To generate the selection weights, global context information is aggregated from the input feature map. This is typically done using global average pooling, producing a global context vector \( g \):
-     \[
+   - To generate the selection weights, global context information is aggregated from the input feature map. This is typically done using global average pooling, producing a global context vector $\( g \)$:
+     $$\[
      g = \frac{1}{H \times W} \sum_{i=1}^{H} \sum_{j=1}^{W} F_{ij}
-     \]
-   - This vector \( g \) summarizes the important information from the entire input feature map.
+     \]$$
+   - This vector $\( g \)$ summarizes the important information from the entire input feature map.
 
 3. **Attention Generation**:
-   - The global context vector \( g \) is passed through a series of fully connected layers (MLPs) to produce the selection weights for each branch. A softmax function ensures that the weights sum to one:
-     \[
+   - The global context vector $\( g \)$ is passed through a series of fully connected layers (MLPs) to produce the selection weights for each branch. A softmax function ensures that the weights sum to one:
+     $$\[
      \alpha = \text{softmax}(\text{MLP}(g))
-     \]
-   - Here, \( \alpha = [\alpha_1, \alpha_2, \ldots, \alpha_n] \) are the selection weights for the branches.
+     \]$$
+   - Here, $\( \alpha = [\alpha_1, \alpha_2, \ldots, \alpha_n] \)$ are the selection weights for the branches.
 
 4. **Feature Aggregation**:
-   - The final output feature map is obtained by a weighted sum of the feature maps from each branch, using the selection weights \( \alpha \):
-     \[
+   - The final output feature map is obtained by a weighted sum of the feature maps from each branch, using the selection weights $\( \alpha \)$:
+     $$\[
      F_{out} = \sum_{i=1}^{n} \alpha_i \cdot F_i
-     \]
+     \]$$
    - This weighted sum combines the contributions of each branch according to their relevance, as determined by the attention mechanism.
 
 ### Benefits of Selective Kernel Attention
@@ -556,6 +568,8 @@ Selective Kernel Attention has been applied in various areas, including:
 ### Summary
 
 Selective Kernel Attention (SKA) is a powerful attention mechanism that enhances CNNs by enabling dynamic selection of convolutional kernels. By using multiple branches with different receptive fields and an attention mechanism to select the most relevant features, SKA improves the adaptability, flexibility, and overall performance of neural networks. This makes it a valuable tool for various computer vision tasks, including image classification, object detection, and semantic segmentation.
+
+---
 
 ### 8. Linear Context Attention
 * #### Linear Context Transform Block (AAAI 2020) [pdf](https://arxiv.org/pdf/1909.03834v2)
@@ -590,34 +604,34 @@ Linear Context Attention (LCA) is an attention mechanism designed to efficiently
 Here's a simplified breakdown of how Linear Context Attention typically functions:
 
 1. **Feature Extraction**:
-   - Extract features from an input image using a convolutional neural network (CNN). Let the feature map be \( F \in \mathbb{R}^{H \times W \times C} \), where \( H \) and \( W \) are the height and width, and \( C \) is the number of channels.
+   - Extract features from an input image using a convolutional neural network (CNN). Let the feature map be $\( F \in \mathbb{R}^{H \times W \times C} \)$, where $\( H \) and \( W \)$ are the height and width, and $\( C \)$ is the number of channels.
 
 2. **Context Aggregation**:
-   - Perform a global pooling operation (such as global average pooling) to aggregate the features across the spatial dimensions. This results in a global context vector \( g \in \mathbb{R}^{C} \):
-     \[
+   - Perform a global pooling operation (such as global average pooling) to aggregate the features across the spatial dimensions. This results in a global context vector $\( g \in \mathbb{R}^{C} \)$:
+     $$\[
      g = \frac{1}{H \times W} \sum_{i=1}^{H} \sum_{j=1}^{W} F_{ij}
-     \]
-   - This global context vector \( g \) summarizes the important information from the entire feature map.
+     \]$$
+   - This global context vector $\( g \)$ summarizes the important information from the entire feature map.
 
 3. **Attention Generation**:
-   - Generate attention weights using the global context vector. This involves passing \( g \) through a series of linear transformations, typically using fully connected layers followed by a softmax function to ensure the weights sum to one:
-     \[
+   - Generate attention weights using the global context vector. This involves passing $\( g \)$ through a series of linear transformations, typically using fully connected layers followed by a softmax function to ensure the weights sum to one:
+     $$\[
      \alpha = \text{softmax}(Wg + b)
-     \]
-   - Here, \( \alpha \in \mathbb{R}^{C} \) are the attention weights for each channel.
+     \]$$
+   - Here, $\( \alpha \in \mathbb{R}^{C} \)$ are the attention weights for each channel.
 
 4. **Feature Modulation**:
-   - Modulate the original feature map \( F \) using the attention weights \( \alpha \). This is done by element-wise multiplication:
-     \[
+   - Modulate the original feature map $\( F \)$ using the attention weights $\( \alpha \)$. This is done by element-wise multiplication:
+     $$\[
      F_{modulated} = F \times \alpha
-     \]
-   - The modulated feature map \( F_{modulated} \in \mathbb{R}^{H \times W \times C} \) incorporates the global context information.
+     \]$$
+   - The modulated feature map $\( F_{modulated} \in \mathbb{R}^{H \times W \times C} \)$ incorporates the global context information.
 
 5. **Combining Features**:
    - The final output is often obtained by combining the modulated feature map with the original feature map, typically using a residual connection:
-     \[
+     $$\[
      F_{out} = F + F_{modulated}
-     \]
+     \]$$
    - This ensures that the original features are preserved while enhancing them with the global context.
 
 ### Benefits of Linear Context Attention
@@ -637,6 +651,8 @@ Linear Context Attention can be applied to a range of tasks, including:
 ### Summary
 
 Linear Context Attention (LCA) is an efficient attention mechanism designed to capture and utilize global contextual information in neural networks with linear complexity. By aggregating global context and using it to modulate feature representations, LCA enhances the model's ability to understand the broader scene while maintaining computational efficiency. This makes it a valuable tool for various computer vision tasks, including image classification, object detection, and semantic segmentation.
+
+---
 
 ### 9. Gated Channel Attention
 * #### Gated Channel Transformation for Visual Recognition (CVPR 2020) [pdf](http://openaccess.thecvf.com/content_CVPR_2020/papers/Yang_Gated_Channel_Transformation_for_Visual_Recognition_CVPR_2020_paper.pdf)
@@ -671,34 +687,34 @@ Gated Channel Attention (GCA) is an attention mechanism designed to enhance the 
 Here’s a detailed breakdown of how Gated Channel Attention typically functions:
 
 1. **Feature Extraction**:
-   - Given an input feature map \( F \in \mathbb{R}^{H \times W \times C} \) (where \( H \) and \( W \) are the height and width, and \( C \) is the number of channels), extract features using a convolutional neural network (CNN).
+   - Given an input feature map $\( F \in \mathbb{R}^{H \times W \times C} \)$ (where $\( H \)$ and $\( W \)$ are the height and width, and $\( C \)$ is the number of channels), extract features using a convolutional neural network (CNN).
 
 2. **Global Context Aggregation**:
-   - Perform global average pooling to aggregate features across the spatial dimensions, producing a global context vector \( g \in \mathbb{R}^{C} \):
-     \[
+   - Perform global average pooling to aggregate features across the spatial dimensions, producing a global context vector $\( g \in \mathbb{R}^{C} \)$:
+     $$\[
      g = \frac{1}{H \times W} \sum_{i=1}^{H} \sum_{j=1}^{W} F_{ij}
-     \]
-   - This vector \( g \) captures the overall importance of each channel.
+     \]$$
+   - This vector $\( g \)$ captures the overall importance of each channel.
 
 3. **Gating Mechanism**:
-   - Pass the global context vector \( g \) through a gating mechanism. This typically involves a series of fully connected layers (MLPs) followed by a sigmoid activation function to produce the gating weights \( \alpha \):
-     \[
+   - Pass the global context vector $\( g \)$ through a gating mechanism. This typically involves a series of fully connected layers (MLPs) followed by a sigmoid activation function to produce the gating weights \( \alpha \):
+     $$\[
      \alpha = \sigma(W_2 \cdot \text{ReLU}(W_1 \cdot g + b_1) + b_2)
-     \]
-   - Here, \( \alpha \in \mathbb{R}^{C} \) represents the gating weights, \( W_1 \) and \( W_2 \) are weight matrices, and \( b_1 \) and \( b_2 \) are biases.
+     \]$$
+   - Here, $\( \alpha \in \mathbb{R}^{C} \)$ represents the gating weights, $\( W_1 \)$ and $\( W_2 \)$ are weight matrices, and $\( b_1 \)$ and $\( b_2 \)$ are biases.
 
 4. **Feature Modulation**:
-   - Modulate the original feature map \( F \) using the gating weights \( \alpha \). This is done by element-wise multiplication:
-     \[
+   - Modulate the original feature map $\( F \)$ using the gating weights $\( \alpha \)$. This is done by element-wise multiplication:
+     $$\[
      F_{modulated} = F \times \alpha
-     \]
-   - Each channel of the feature map \( F \) is scaled by its corresponding gating weight in \( \alpha \).
+     \]$$
+   - Each channel of the feature map $\( F \)$ is scaled by its corresponding gating weight in $\( \alpha \)$.
 
 5. **Combining Features**:
    - The final output feature map is often obtained by combining the modulated feature map with the original feature map using a residual connection:
-     \[
+     $$\[
      F_{out} = F + F_{modulated}
-     \]
+     \]$$
    - This residual connection helps retain the original features while enhancing them with the gated attention.
 
 ### Benefits of Gated Channel Attention
@@ -718,6 +734,8 @@ Gated Channel Attention can be applied to a wide range of tasks, including:
 ### Summary
 
 Gated Channel Attention (GCA) is an attention mechanism that enhances neural network performance by dynamically modulating the importance of feature channels. By using a gating mechanism informed by global context, GCA selectively emphasizes the most relevant features, improving the representational capacity and adaptability of the network. This makes GCA a valuable tool for various computer vision tasks, including image classification, object detection, and semantic segmentation.
+
+---
 
 ### 10. Efficient Channel Attention
 * #### Ecanet: Efficient channel attention for deep convolutional neural networks (CVPR 2020) [pdf](https://arxiv.org/pdf/1910.03151)
@@ -753,34 +771,34 @@ Efficient Channel Attention (ECA) is an attention mechanism designed to improve 
 Here is a detailed breakdown of how Efficient Channel Attention typically functions:
 
 1. **Feature Extraction**:
-   - Given an input feature map \( F \in \mathbb{R}^{H \times W \times C} \) (where \( H \) and \( W \) are the height and width, and \( C \) is the number of channels), the features are extracted using a convolutional neural network (CNN).
+   - Given an input feature map $\( F \in \mathbb{R}^{H \times W \times C} \)$ (where $\( H \)$ and $\( W \)$ are the height and width, and $\( C \)$ is the number of channels), the features are extracted using a convolutional neural network (CNN).
 
 2. **Global Average Pooling**:
    - Perform global average pooling to aggregate the features across the spatial dimensions, producing a global context vector \( g \in \mathbb{R}^{C} \):
-     \[
+     $$\[
      g_c = \frac{1}{H \times W} \sum_{i=1}^{H} \sum_{j=1}^{W} F_{ijc}
-     \]
-   - This vector \( g \) summarizes the information from the entire feature map for each channel.
+     \]$$
+   - This vector $\( g \)$ summarizes the information from the entire feature map for each channel.
 
 3. **1D Convolution**:
-   - Instead of using fully connected layers, ECA applies a 1D convolution over the channel dimension. This 1D convolution uses a kernel size \( k \) to capture local cross-channel interactions:
-     \[
+   - Instead of using fully connected layers, ECA applies a 1D convolution over the channel dimension. This 1D convolution uses a kernel size $\( k \)$ to capture local cross-channel interactions:
+     $$\[
      \alpha = \sigma(\text{Conv1D}(g, k))
-     \]
-   - Here, \( \sigma \) is a sigmoid activation function, and \( \alpha \in \mathbb{R}^{C} \) are the attention weights. The kernel size \( k \) is typically chosen based on the channel dimension to balance the trade-off between complexity and capturing sufficient dependencies.
+     \]$$
+   - Here, $\( \sigma \)$ is a sigmoid activation function, and $\( \alpha \in \mathbb{R}^{C} \)$ are the attention weights. The kernel size $\( k \)$ is typically chosen based on the channel dimension to balance the trade-off between complexity and capturing sufficient dependencies.
 
 4. **Feature Modulation**:
-   - Modulate the original feature map \( F \) using the attention weights \( \alpha \) by element-wise multiplication:
-     \[
+   - Modulate the original feature map $\( F \)$ using the attention weights $\( \alpha \)$ by element-wise multiplication:
+     $$\[
      F_{modulated} = F \times \alpha
-     \]
-   - Each channel of the feature map \( F \) is scaled by its corresponding attention weight in \( \alpha \).
+     \]$$
+   - Each channel of the feature map $\( F \)$ is scaled by its corresponding attention weight in $\( \alpha \)$.
 
 5. **Combining Features**:
    - The final output feature map is often obtained by combining the modulated feature map with the original feature map using a residual connection:
-     \[
+     $$\[
      F_{out} = F + F_{modulated}
-     \]
+     \]$$
    - This residual connection helps retain the original features while enhancing them with the attention mechanism.
 
 ### Benefits of Efficient Channel Attention
@@ -800,6 +818,8 @@ Efficient Channel Attention can be applied to a variety of tasks, including:
 ### Summary
 
 Efficient Channel Attention (ECA) is an attention mechanism designed to improve the performance of CNNs by focusing on important feature channels in a computationally efficient manner. By employing global average pooling and 1D convolutions to capture local cross-channel interactions, ECA enhances the representational capacity of neural networks without significantly increasing computational complexity. This makes ECA a valuable tool for various computer vision tasks, including image classification, object detection, and semantic segmentation.
+
+---
 
 ### 11. Triplet Attention
 
@@ -835,7 +855,7 @@ Triplet Attention is an advanced attention mechanism designed to enhance neural 
 Here's a detailed breakdown of how Triplet Attention typically functions:
 
 1. **Feature Extraction**:
-   - Given an input feature map \( F \in \mathbb{R}^{H \times W \times C} \), where \( H \) and \( W \) are the height and width, and \( C \) is the number of channels, features are extracted using a convolutional neural network (CNN).
+   - Given an input feature map $\( F \in \mathbb{R}^{H \times W \times C} \)$, where $\( H \)$ and $\( W \)$ are the height and width, and $\( C \)$ is the number of channels, features are extracted using a convolutional neural network (CNN).
 
 2. **Three Attention Branches**:
    - The input feature map is processed through three branches: 
@@ -844,52 +864,52 @@ Here's a detailed breakdown of how Triplet Attention typically functions:
      3. **Width Attention Branch**: Captures spatial dependencies along the width dimension.
 
 3. **Channel Attention Branch**:
-   - Perform global average pooling along the spatial dimensions to produce a channel descriptor \( g_c \in \mathbb{R}^{C} \):
-     \[
+   - Perform global average pooling along the spatial dimensions to produce a channel descriptor $\( g_c \in \mathbb{R}^{C} \)$:
+     $$\[
      g_c = \frac{1}{H \times W} \sum_{i=1}^{H} \sum_{j=1}^{W} F_{ijc}
-     \]
-   - This vector \( g_c \) is used to compute channel attention weights, typically using a fully connected layer and a sigmoid activation function:
-     \[
+     \]$$
+   - This vector $\( g_c \)$ is used to compute channel attention weights, typically using a fully connected layer and a sigmoid activation function:
+     $$\[
      \alpha_c = \sigma(W_c g_c + b_c)
-     \]
-   - The channel attention weights \( \alpha_c \in \mathbb{R}^{C} \) modulate the original feature map:
-     \[
+     \]$$
+   - The channel attention weights $\( \alpha_c \in \mathbb{R}^{C} \)$ modulate the original feature map:
+     $$\[
      F_c = F \cdot \alpha_c
-     \]
+     \]$$
 
 4. **Height Attention Branch**:
-   - Perform global average pooling along the width dimension to produce a height descriptor \( g_h \in \mathbb{R}^{H \times C} \):
-     \[
+   - Perform global average pooling along the width dimension to produce a height descriptor $\( g_h \in \mathbb{R}^{H \times C} \)$:
+     $$\[
      g_h = \frac{1}{W} \sum_{j=1}^{W} F_{ijc}
-     \]
-   - Apply convolutional layers followed by a sigmoid activation function to generate height attention weights \( \alpha_h \in \mathbb{R}^{H \times 1 \times C} \):
-     \[
+     \]$$
+   - Apply convolutional layers followed by a sigmoid activation function to generate height attention weights $\( \alpha_h \in \mathbb{R}^{H \times 1 \times C} \)$:
+     $$\[
      \alpha_h = \sigma(\text{Conv}(g_h))
-     \]
-   - The height attention weights \( \alpha_h \) modulate the feature map along the height dimension:
-     \[
+     \]$$
+   - The height attention weights $\( \alpha_h \)$ modulate the feature map along the height dimension:
+     $$\[
      F_h = F \cdot \alpha_h
-     \]
+     \]$$
 
 5. **Width Attention Branch**:
-   - Perform global average pooling along the height dimension to produce a width descriptor \( g_w \in \mathbb{R}^{W \times C} \):
-     \[
+   - Perform global average pooling along the height dimension to produce a width descriptor $\( g_w \in \mathbb{R}^{W \times C} \)$:
+     $$\[
      g_w = \frac{1}{H} \sum_{i=1}^{H} F_{ijc}
-     \]
-   - Apply convolutional layers followed by a sigmoid activation function to generate width attention weights \( \alpha_w \in \mathbb{R}^{1 \times W \times C} \):
-     \[
+     \]$$
+   - Apply convolutional layers followed by a sigmoid activation function to generate width attention weights $\( \alpha_w \in \mathbb{R}^{1 \times W \times C} \)$:
+     $$\[
      \alpha_w = \sigma(\text{Conv}(g_w))
-     \]
-   - The width attention weights \( \alpha_w \) modulate the feature map along the width dimension:
-     \[
+     \]$$
+   - The width attention weights $\( \alpha_w \)$ modulate the feature map along the width dimension:
+     $$\[
      F_w = F \cdot \alpha_w
-     \]
+     \]$$
 
 6. **Combining Features**:
    - Combine the outputs from the three attention branches to form the final output feature map. This can be done using element-wise addition or multiplication:
-     \[
+     $$\[
      F_{out} = F_c + F_h + F_w
-     \]
+     \]$$
 
 ### Benefits of Triplet Attention
 
@@ -909,6 +929,8 @@ Triplet Attention can be applied to a wide range of tasks, including:
 
 Triplet Attention is a sophisticated attention mechanism that enhances neural networks' ability to capture spatial and channel-wise interdependencies through three distinct attention branches. By simultaneously considering channel attention, height attention, and width attention, Triplet Attention provides a comprehensive and detailed feature representation, leading to improved performance across various computer vision tasks. This makes it a valuable addition to modern deep learning architectures, enhancing their ability to understand and process complex visual data.
 
+---
+
 ### 12. Gaussian Context Attention
 * #### Gaussian Context Transformer (CVPR 2021) [pdf](http://openaccess.thecvf.com//content/CVPR2021/papers/Ruan_Gaussian_Context_Transformer_CVPR_2021_paper.pdf)
 * ##### Model Overview
@@ -924,6 +946,9 @@ attn = GCT(64)
 y = attn(x)
 print(y.shape)
 ```
+
+---
+
 ### 13. Coordinate Attention
 
 * #### Coordinate Attention for Efficient Mobile Network Design (CVPR 2021) [pdf](https://arxiv.org/abs/2103.02907)
@@ -940,6 +965,9 @@ attn = CoordinateAttention(64, 64)
 y = attn(x)
 print(y.shape)
 ```
+
+---
+
 ### 14. SimAM
 * SimAM: A Simple, Parameter-Free Attention Module for Convolutional Neural Networks (ICML 2021) [pdf](http://proceedings.mlr.press/v139/yang21o/yang21o.pdf)
 * ##### Model Overview
@@ -955,6 +983,9 @@ attn = simam_module(64)
 y = attn(x)
 print(y.shape)
 ```
+
+---
+
 ### 15. Dual Attention
 * #### Dual Attention Network for Scene Segmentatio (CVPR 2019)  [pdf](https://arxiv.org/pdf/1809.02983.pdf)
 * ##### Model Overview
