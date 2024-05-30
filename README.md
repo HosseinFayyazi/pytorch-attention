@@ -127,10 +127,11 @@ The SE block operates in two main steps: **squeeze** and **excitation**.
    - The resulting vector $\( s \)$ contains weights that highlight the importance of each channel.
 
 3. **Recalibration**:
-   - Finally, the original input feature map is recalibrated by scaling each channel with the corresponding weight from the excitation vector $\( s \)$:
+   - Finally, the original input feature map is recalibrated by scaling each channel with the corresponding weight from the excitation vector $\( s \)$
      $$\[
      \tilde{x}_{ijc} = s_c \cdot x_{ijc}
      \]$$
+     
    - This scaling operation emphasizes important channels and suppresses less important ones, thereby improving the network's ability to model complex dependencies.
 
 ### Benefits of SE Attention
@@ -172,7 +173,7 @@ CBAM applies attention in two main stages: **Channel Attention** and **Spatial A
    - The Channel Attention Module focuses on refining the importance of each channel by capturing the global information of the input feature map.
    - Two different pooling operations, average pooling and max pooling, are applied along the spatial dimension to generate two different spatial context descriptors.
    - These descriptors are then passed through a shared multi-layer perceptron (MLP) with one hidden layer. The outputs of the MLPs are combined and passed through a sigmoid function to obtain the channel attention map.
-   - Formally, given an input feature map $\( F \$ in $\mathbb{R}^{H \times W \times C} \)$:
+   - Formally, given an input feature map $\( F \)$ in $\(mathbb{R}^{H \times W \times C} \)$:
      $$\[
      M_c(F) = \sigma(\text{MLP}(\text{AvgPool}(F)) + \text{MLP}(\text{MaxPool}(F)))
      \]$$
@@ -241,7 +242,7 @@ BAM consists of two main components: **Channel Attention** and **Spatial Attenti
 2. **Spatial Attention Module**:
    - The Spatial Attention Module focuses on important spatial locations.
    - Average pooling and max pooling are applied along the channel dimension to generate spatial context descriptors.
-   - These descriptors are concatenated and passed through a convolutional layer with a \( k \times k \) filter (typically \( k = 7 \)), followed by a sigmoid function to produce the spatial attention map.
+   - These descriptors are concatenated and passed through a convolutional layer with a $\( k \times k \)$ filter (typically $\( k = 7 \)$, followed by a sigmoid function to produce the spatial attention map.
    - Formally, for the modulated feature map $\( F' \in \mathbb{R}^{H \times W \times C} \)$ from the Channel Attention Module:
      $$\[
      M_s(F') = \sigma(f^{k \times k}([\text{AvgPool}(F'); \text{MaxPool}(F')]))
@@ -457,11 +458,10 @@ Global Context Attention typically involves the following steps:
    - The attention map $\( A \in \mathbb{R}^{1 \times 1 \times C} \)$ is obtained, which represents the importance of each channel in the global context.
 
 4. **Feature Modulation**:
-   - Modulate the original feature map $\( F \)$ using the attention map $\( A \)$. This is typically done by element-wise multiplication:
-     $$\[
-     \hat{F}_{ij} = F_{ij} \cdot A
-     \]$$
-   - Here, $\( \hat{F}_{ij} \)$ is the refined feature map that incorporates global contextual information.
+   - Modulate the original feature map $\( F \)$ using the attention map $\( A \)$. This is typically done by element-wise multiplication
+     $$\[\hat{F}_{ij} = F_{ij} \cdot A\]$$
+     
+   - Here, $\(\hat{F}_{ij}\)$ is the refined feature map that incorporates global contextual information.
 
 5. **Combining Features**:
    - The modulated feature map $\( \hat{F} \)$ can be combined with the original feature map $\( F \)$ to enhance the features further, often using a residual connection:
@@ -604,7 +604,7 @@ Linear Context Attention (LCA) is an attention mechanism designed to efficiently
 Here's a simplified breakdown of how Linear Context Attention typically functions:
 
 1. **Feature Extraction**:
-   - Extract features from an input image using a convolutional neural network (CNN). Let the feature map be $\( F \in \mathbb{R}^{H \times W \times C} \)$, where $\( H \) and \( W \)$ are the height and width, and $\( C \)$ is the number of channels.
+   - Extract features from an input image using a convolutional neural network (CNN). Let the feature map be $\( F \in \mathbb{R}^{H \times W \times C} \)$, where $\( H \)$ and $\( W \)$ are the height and width, and $\( C \)$ is the number of channels.
 
 2. **Context Aggregation**:
    - Perform a global pooling operation (such as global average pooling) to aggregate the features across the spatial dimensions. This results in a global context vector $\( g \in \mathbb{R}^{C} \)$:
@@ -697,7 +697,7 @@ Here’s a detailed breakdown of how Gated Channel Attention typically functions
    - This vector $\( g \)$ captures the overall importance of each channel.
 
 3. **Gating Mechanism**:
-   - Pass the global context vector $\( g \)$ through a gating mechanism. This typically involves a series of fully connected layers (MLPs) followed by a sigmoid activation function to produce the gating weights \( \alpha \):
+   - Pass the global context vector $\( g \)$ through a gating mechanism. This typically involves a series of fully connected layers (MLPs) followed by a sigmoid activation function to produce the gating weights $\( \alpha \)$:
      $$\[
      \alpha = \sigma(W_2 \cdot \text{ReLU}(W_1 \cdot g + b_1) + b_2)
      \]$$
@@ -774,7 +774,7 @@ Here is a detailed breakdown of how Efficient Channel Attention typically functi
    - Given an input feature map $\( F \in \mathbb{R}^{H \times W \times C} \)$ (where $\( H \)$ and $\( W \)$ are the height and width, and $\( C \)$ is the number of channels), the features are extracted using a convolutional neural network (CNN).
 
 2. **Global Average Pooling**:
-   - Perform global average pooling to aggregate the features across the spatial dimensions, producing a global context vector \( g \in \mathbb{R}^{C} \):
+   - Perform global average pooling to aggregate the features across the spatial dimensions, producing a global context vector $\( g \in \mathbb{R}^{C} \)$:
      $$\[
      g_c = \frac{1}{H \times W} \sum_{i=1}^{H} \sum_{j=1}^{W} F_{ijc}
      \]$$
@@ -946,6 +946,71 @@ attn = GCT(64)
 y = attn(x)
 print(y.shape)
 ```
+Gaussian Context Attention (GCA) is an advanced attention mechanism designed to enhance neural networks by incorporating global context into feature representations using Gaussian-based weighting. This mechanism leverages the properties of Gaussian functions to provide a smooth and continuous attention distribution, which can improve the network's ability to focus on relevant features across the entire input.
+
+### Key Concepts of Gaussian Context Attention
+
+1. **Global Context Integration**:
+   - GCA integrates global context information to modulate feature representations, allowing the network to utilize broader spatial relationships within the input data.
+
+2. **Gaussian-based Weighting**:
+   - The attention weights in GCA are derived using Gaussian functions, which provide a smooth and continuous attention map. This helps in capturing fine-grained details and relationships within the input features.
+
+3. **Efficiency and Smoothness**:
+   - Gaussian functions are computationally efficient and ensure that the attention distribution is smooth, avoiding abrupt changes that might lead to instability in the network.
+
+### How Gaussian Context Attention Works
+
+Here's a detailed breakdown of how Gaussian Context Attention typically functions:
+
+1. **Feature Extraction**:
+   - Given an input feature map $\( F \in \mathbb{R}^{H \times W \times C} \)$, where $\( H \)$ and $\( W \)$ are the height and width, and $\( C \)$ is the number of channels, the features are extracted using a convolutional neural network (CNN).
+
+2. **Context Aggregation**:
+   - To capture global context, apply a global average pooling operation to the feature map, producing a context vector $\( g \in \mathbb{R}^{C} \)$:
+     $$\[
+     g = \frac{1}{H \times W} \sum_{i=1}^{H} \sum_{j=1}^{W} F_{ijc}
+     \]$$
+   - This vector $\( g \)$ encapsulates the global information from the feature map.
+
+3. **Gaussian Weighting**:
+   - Use Gaussian functions to compute attention weights for the feature map. The Gaussian function is parameterized to produce a smooth attention distribution. For a given feature map position $\((i, j)\)$, the Gaussian weight can be computed as:
+     $$\[
+     \alpha_{ij} = \exp\left(-\frac{(x_i - \mu_x)^2 + (y_j - \mu_y)^2}{2\sigma^2}\right)
+     \]$$
+   - Here, $\((x_i, y_j)\)$ represents the spatial coordinates, $\((\mu_x, \mu_y)\)$ are the means, and $\(\sigma\)$ is the standard deviation controlling the spread of the Gaussian function.
+
+4. **Modulating Feature Map**:
+   - The computed Gaussian weights $\( \alpha_{ij} \)$ are used to modulate the original feature map $\( F \)$. This modulation can be done by element-wise multiplication:
+     $$\[
+     F_{modulated} = F \cdot \alpha
+     \]$$
+   - The modulated feature map emphasizes regions of the input based on the Gaussian attention weights.
+
+5. **Combining Features**:
+   - The final output feature map is often obtained by combining the modulated feature map with the original feature map using a residual connection:
+     $$\[
+     F_{out} = F + F_{modulated}
+     \]$$
+   - This ensures that the original features are preserved while enhancing them with the Gaussian context.
+
+### Benefits of Gaussian Context Attention
+
+- **Smooth Attention Distribution**: Gaussian functions provide a smooth attention map, leading to more stable and reliable feature modulation.
+- **Enhanced Global Context**: By incorporating global context, GCA improves the network's ability to understand broader spatial relationships within the input data.
+- **Computational Efficiency**: Gaussian functions are computationally efficient, making GCA a practical addition to existing neural network architectures.
+
+### Applications
+
+Gaussian Context Attention can be applied to a variety of tasks, including:
+
+- **Image Classification**: Enhancing classification models by focusing on globally relevant features.
+- **Object Detection**: Improving detection models by incorporating global context for better localization and recognition of objects.
+- **Semantic Segmentation**: Refining segmentation models by providing a more comprehensive understanding of the spatial context.
+
+### Summary
+
+Gaussian Context Attention (GCA) is an attention mechanism that enhances neural networks by integrating global context into feature representations using Gaussian-based weighting. This approach provides a smooth and continuous attention distribution, improving the network's ability to focus on relevant features across the entire input. GCA is computationally efficient and can be applied to various computer vision tasks, including image classification, object detection, and semantic segmentation, leading to improved performance and more robust feature representations.
 
 ---
 
@@ -966,6 +1031,81 @@ y = attn(x)
 print(y.shape)
 ```
 
+Coordinate Attention (CA) is an attention mechanism designed to enhance neural networks, particularly convolutional neural networks (CNNs), by capturing and utilizing spatial information along the height and width dimensions independently. Unlike traditional attention mechanisms that often pool information globally or consider spatial and channel information together, Coordinate Attention decomposes attention into two separate processes that capture long-range dependencies in a more structured and efficient manner.
+
+### Key Concepts of Coordinate Attention
+
+1. **Decomposition of Attention**:
+   - Coordinate Attention decomposes spatial attention into two separate processes: one along the height dimension and the other along the width dimension. This allows the network to capture long-range dependencies more effectively and efficiently.
+
+2. **Coordinate Information Embedding**:
+   - CA embeds coordinate information directly into the attention mechanism, which helps the network retain precise positional information while computing attention weights.
+
+3. **Efficient Computation**:
+   - By splitting the attention process into two smaller, sequential operations, CA reduces the computational complexity compared to traditional attention mechanisms that operate on the entire spatial dimension simultaneously.
+
+### How Coordinate Attention Works
+
+Here's a detailed breakdown of how Coordinate Attention typically functions:
+
+1. **Feature Extraction**:
+   - Given an input feature map $\( F \in \mathbb{R}^{H \times W \times C} \)$, where $\( H \)$ and $\( W \)$ are the height and width, and $\( C \)$ is the number of channels, features are extracted using a convolutional neural network (CNN).
+
+2. **Coordinate Attention Module**:
+   - The Coordinate Attention module processes the input feature map in two sequential steps: height attention and width attention.
+
+3. **Height Attention**:
+   - Perform global average pooling along the width dimension to produce a height descriptor $\( g_h \in \mathbb{R}^{H \times 1 \times C} \)$:
+     $$\[
+     g_h(i, c) = \frac{1}{W} \sum_{j=1}^{W} F(i, j, c)
+     \]$$
+   - This height descriptor $\( g_h \)$ captures the long-range dependencies along the height dimension.
+
+4. **Width Attention**:
+   - Perform global average pooling along the height dimension to produce a width descriptor $\( g_w \in \mathbb{R}^{1 \times W \times C} \)$:
+     $$\[
+     g_w(j, c) = \frac{1}{H} \sum_{i=1}^{H} F(i, j, c)
+     \]$$
+   - This width descriptor $\( g_w \)$ captures the long-range dependencies along the width dimension.
+
+5. **Coordinate Information Embedding**:
+   - Apply two separate convolutional transformations to the height descriptor $\( g_h \)$ and width descriptor $\( g_w \)$ to embed coordinate information:
+   - 
+     $$\[
+     h_{coord} = \sigma(\text{Conv}_{1\times1}(g_h))
+     \]$$
+     
+     $$\[
+     w_{coord} = \sigma(\text{Conv}_{1\times1}(g_w))
+     \]$$
+     
+   - Here, $\( \sigma \)$ denotes a sigmoid activation function, and $\(\text{Conv}_{1\times1}\)$ represents a 1x1 convolution.
+
+6. **Combining Features**:
+   - The final attention weights are obtained by combining the height and width attention maps:
+     $$\[
+     F_{out} = F \times h_{coord} \times w_{coord}
+     \]$$
+   - The original feature map $\( F \)$ is modulated by the attention weights from both height and width directions.
+
+### Benefits of Coordinate Attention
+
+- **Enhanced Spatial Information**: By separately processing height and width information, CA captures long-range dependencies more effectively, leading to richer spatial representations.
+- **Positional Information**: Embedding coordinate information helps retain precise spatial details that are often lost in other attention mechanisms.
+- **Computational Efficiency**: Decomposing attention into two sequential processes reduces computational overhead compared to traditional attention mechanisms that operate globally on spatial dimensions.
+
+### Applications
+
+Coordinate Attention can be applied to a variety of tasks, including:
+
+- **Image Classification**: Enhancing the discriminative power of classification models by focusing on long-range spatial dependencies.
+- **Object Detection**: Improving detection models by capturing spatial relationships more effectively for better localization and recognition.
+- **Semantic Segmentation**: Refining segmentation models by providing a more detailed understanding of spatial context, leading to better differentiation between classes.
+
+### Summary
+
+Coordinate Attention (CA) is an advanced attention mechanism that enhances neural networks by decomposing spatial attention into separate height and width processes. This approach captures long-range dependencies more effectively, embeds coordinate information directly, and reduces computational complexity. CA improves feature representations for various computer vision tasks, including image classification, object detection, and semantic segmentation, by providing richer and more precise spatial information.
+
 ---
 
 ### 14. SimAM
@@ -983,6 +1123,64 @@ attn = simam_module(64)
 y = attn(x)
 print(y.shape)
 ```
+SimAM (Simple and Effective Attention Module) is an attention mechanism designed to improve the performance of neural networks by emphasizing important features in a simple and computationally efficient manner. Unlike many complex attention mechanisms, SimAM focuses on simplicity and effectiveness, making it easy to integrate into existing architectures without significantly increasing computational overhead.
+
+### Key Concepts of SimAM
+
+1. **Simplicity**:
+   - SimAM is designed to be simple in terms of both implementation and computation. It avoids complex operations and instead uses straightforward computations to generate attention weights.
+
+2. **Spatial and Channel Attention**:
+   - SimAM can simultaneously focus on important spatial and channel features, enhancing the representational power of the network.
+
+3. **Lightweight**:
+   - The module introduces minimal additional parameters and computational cost, making it suitable for deployment in various real-time applications and resource-constrained environments.
+
+### How SimAM Works
+
+Here's a detailed breakdown of how SimAM typically functions:
+
+1. **Feature Extraction**:
+   - Given an input feature map $\( F \in \mathbb{R}^{H \times W \times C} \)$, where $\( H \)$ and $\( W \)$ are the height and width, and $\( C \)$ is the number of channels, features are extracted using a convolutional neural network (CNN).
+
+2. **Compute Attention Weights**:
+   - SimAM computes attention weights for each element in the feature map based on a simple operation. Typically, this involves calculating the importance of each feature in a straightforward manner, such as using mean or variance, and applying a non-linear transformation like the sigmoid function to obtain the attention weights.
+
+3. **Attention Weights Calculation**:
+   - For each element $\( f_{ijc} \)$ in the feature map $\( F \)$, calculate its importance. This can be done by considering the context of the element within its local neighborhood or globally across the entire feature map.
+   - Apply a non-linear transformation to scale the computed importance values to a range [0, 1], which serves as the attention weight $\( \alpha_{ijc} \)$.
+
+4. **Modulate Feature Map**:
+   - Modulate the original feature map $\( F \)$ using the computed attention weights $\( \alpha \)$ by element-wise multiplication:
+     $$\[
+     F_{modulated} = F \cdot \alpha
+     \]$$
+   - Each element of the feature map $\( F \)$ is scaled by its corresponding attention weight, emphasizing more important features and suppressing less important ones.
+
+5. **Combine Features**:
+   - The final output feature map is often obtained by combining the modulated feature map with the original feature map using a residual connection:
+     $$\[
+     F_{out} = F + F_{modulated}
+     \]$$
+   - This ensures that the original features are preserved while enhancing them with the attention mechanism.
+
+### Benefits of SimAM
+
+- **Ease of Implementation**: The simplicity of SimAM makes it easy to integrate into existing neural network architectures without significant changes or additional complexity.
+- **Computational Efficiency**: SimAM introduces minimal computational overhead, making it suitable for real-time applications and resource-constrained environments.
+- **Improved Performance**: By focusing on important features, SimAM enhances the representational power of neural networks, leading to improved performance across various tasks.
+
+### Applications
+
+SimAM can be applied to a variety of tasks, including:
+
+- **Image Classification**: Enhancing the discriminative power of classification models by focusing on the most informative features.
+- **Object Detection**: Improving detection models by emphasizing relevant features for accurate localization and recognition of objects.
+- **Semantic Segmentation**: Refining segmentation models by enhancing the representation of important features, leading to better differentiation between classes.
+
+### Summary
+
+SimAM (Simple and Effective Attention Module) is an attention mechanism designed to enhance neural networks by focusing on important features in a simple and computationally efficient manner. By using straightforward computations to generate attention weights and emphasizing important spatial and channel features, SimAM improves the representational power of neural networks without significantly increasing computational overhead. This makes it a valuable tool for various computer vision tasks, including image classification, object detection, and semantic segmentation.
 
 ---
 
@@ -1002,6 +1200,78 @@ attn = CAM()
 y = attn(x)
 print(y.shape
 ```
+
+Dual Attention (DA) is an advanced attention mechanism designed to improve neural network performance by focusing on important features in both spatial and channel dimensions. This mechanism enhances the network's ability to capture global contextual information and dependencies, which can lead to significant performance improvements in various computer vision tasks.
+
+### Key Concepts of Dual Attention
+
+1. **Spatial Attention**:
+   - Spatial attention focuses on the important regions within the spatial dimensions (height and width) of the feature map, allowing the network to concentrate on crucial spatial locations.
+
+2. **Channel Attention**:
+   - Channel attention emphasizes the important feature channels, enabling the network to prioritize more informative channels over less relevant ones.
+
+3. **Global Context Integration**:
+   - Dual Attention integrates global context information, which helps the network understand broader spatial relationships and dependencies.
+
+### How Dual Attention Works
+
+Here's a detailed breakdown of how Dual Attention typically functions:
+
+1. **Feature Extraction**:
+   - Given an input feature map $\( F \in \mathbb{R}^{H \times W \times C} \)$, where $\( H \)$ and $\( W \)$ are the height and width, and $\( C \)$ is the number of channels, features are extracted using a convolutional neural network (CNN).
+
+2. **Channel Attention Module**:
+   - **Global Average Pooling**: Perform global average pooling along the spatial dimensions to produce a channel descriptor $\( g \in \mathbb{R}^{C} \)$:
+     $$\[
+     g_c = \frac{1}{H \times W} \sum_{i=1}^{H} \sum_{j=1}^{W} F_{ijc}
+     \]$$
+   - **Fully Connected Layers**: Pass the channel descriptor through fully connected layers followed by a sigmoid activation to generate channel attention weights $\( \alpha_c \in \mathbb{R}^{C} \)$:
+     $$\[
+     \alpha_c = \sigma(\text{FC}(g))
+     \]$$
+   - **Channel-wise Multiplication**: Modulate the original feature map $\( F \)$ by multiplying each channel with the corresponding channel attention weight:
+     $$\[
+     F_c = F \cdot \alpha_c
+     \]$$
+
+3. **Spatial Attention Module**:
+   - **Global Context Embedding**: To incorporate spatial dependencies, apply global context embedding by computing spatial attention weights. This can be achieved using convolutions:
+     $$\[
+     \alpha_{ij} = \sigma(\text{Conv}(F_{ij}))
+     \]$$
+   - **Spatial-wise Multiplication**: Modulate the feature map $\( F_c \)$ from the channel attention module with the spatial attention weights:
+     $$\[
+     F_{spatial} = F_c \cdot \alpha_{ij}
+     \]$$
+
+4. **Combining Features**:
+   - The final output feature map is obtained by combining the modulated feature maps from both the channel and spatial attention modules:
+     $$\[
+     F_{out} = F_{spatial}
+     \]$$
+
+### Benefits of Dual Attention
+
+- **Enhanced Feature Representation**: By focusing on important features in both spatial and channel dimensions, DA improves the representational capacity of the network.
+- **Improved Performance**: The ability to capture global context and dependencies leads to better performance in various tasks such as image classification, object detection, and semantic segmentation.
+- **Flexibility**: Dual Attention can be easily integrated into different neural network architectures to enhance their performance.
+
+### Applications
+
+Dual Attention can be applied to a variety of tasks, including:
+
+- **Image Classification**: Enhancing classification models by focusing on the most informative spatial regions and feature channels.
+- **Object Detection**: Improving detection models by emphasizing relevant features for accurate localization and recognition of objects.
+- **Semantic Segmentation**: Refining segmentation models by enhancing the representation of important features, leading to better differentiation between classes.
+
+### Summary
+
+Dual Attention (DA) is an attention mechanism designed to enhance neural networks by focusing on important features in both spatial and channel dimensions. By integrating global context and capturing dependencies, DA improves the representational capacity and performance of neural networks across various computer vision tasks, including image classification, object detection, and semantic segmentation. This makes Dual Attention a valuable tool for enhancing the effectiveness of modern deep learning architectures.
+
+---
+
+
 ## Vision Transformers
 ### 1. ViT Model
 * #### An image is worth 16x16 words: Transformers for image recognition at scale (ICLR 2021) [pdf](https://arxiv.org/pdf/2010.11929)
